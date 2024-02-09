@@ -4,7 +4,7 @@ from torch.utils import data
 from .semantickitti_utils import LEARNING_MAP
 from .LaserMix_semantickitti import lasermix_aug
 from .PolarMix_semantickitti import polarmix
-import random
+import secrets
 
 # used for polarmix
 instance_classes = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -63,7 +63,7 @@ class SemantickittiDataset(data.Dataset):
             self.annos += absoluteFilePaths('/'.join([self.root_path, str(seq).zfill(2), 'velodyne']))
         self.annos.sort()
         self.annos_another = self.annos.copy()
-        random.shuffle(self.annos_another)
+        secrets.SystemRandom().shuffle(self.annos_another)
         print(f'The total sample is {len(self.annos)}')
 
         self._sample_idx = np.arange(len(self.annos))
