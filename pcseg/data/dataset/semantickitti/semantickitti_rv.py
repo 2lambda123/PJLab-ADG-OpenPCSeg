@@ -1,7 +1,6 @@
 import os
 import cv2
 import glob
-import random
 import yaml
 
 import numpy as np
@@ -10,6 +9,7 @@ from torch.utils import data
 from torchvision.transforms import functional as F
 from .semantickitti_utils import LEARNING_MAP, color_map
 from .laserscan import SemLaserScan
+import secrets
 
 
 class SemkittiRangeViewDataset(data.Dataset):
@@ -136,7 +136,7 @@ class SemkittiRangeViewDataset(data.Dataset):
 
         # data aug (range shift)
         if np.random.random() >= (1 - self.if_range_shift):
-            split_point = random.randint(100, self.W-100)
+            split_point = secrets.SystemRandom().randint(100, self.W-100)
             dataset_dict = self.sample_transform(dataset_dict, split_point)
 
         scan, label, mask = self.prepare_input_label_semantic_with_mask(dataset_dict)
@@ -160,7 +160,7 @@ class SemkittiRangeViewDataset(data.Dataset):
 
             # data aug (range shift)
             if np.random.random() >= (1 - self.if_range_shift):
-                split_point_ = random.randint(100, self.W-100)
+                split_point_ = secrets.SystemRandom().randint(100, self.W-100)
                 dataset_dict_ = self.sample_transform(dataset_dict_, split_point_)
 
             scan_, label_, mask_ = self.prepare_input_label_semantic_with_mask(dataset_dict_)

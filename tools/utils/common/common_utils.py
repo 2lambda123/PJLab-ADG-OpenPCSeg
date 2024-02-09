@@ -6,7 +6,6 @@ This file is modified from https://github.com/open-mmlab/OpenPCDet
 import logging
 import os
 import pickle
-import random
 import shutil
 import subprocess
 import SharedArray
@@ -15,6 +14,7 @@ import numpy as np
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
+import secrets
 
 
 def check_numpy_to_torch(x):
@@ -97,7 +97,7 @@ def create_logger(log_file=None, rank=0, log_level=logging.INFO):
 
 
 def set_random_seed(seed):
-    random.seed(seed)
+    secrets.SystemRandom().seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.backends.cudnn.deterministic = True

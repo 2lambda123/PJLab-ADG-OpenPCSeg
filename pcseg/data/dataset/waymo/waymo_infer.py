@@ -1,8 +1,8 @@
 import os
 import numpy as np
 from torch.utils import data
-import random
 import pickle
+import secrets
 
 
 class WaymoInferDataset(data.Dataset):
@@ -38,7 +38,7 @@ class WaymoInferDataset(data.Dataset):
         self.annos = annos
 
         self.annos_another = self.annos.copy()
-        random.shuffle(self.annos_another)
+        secrets.SystemRandom().shuffle(self.annos_another)
         print(f'The total sample is {len(self.annos)}')
 
         self.sample_idx = self._sample_idx = np.arange(len(self.annos))
