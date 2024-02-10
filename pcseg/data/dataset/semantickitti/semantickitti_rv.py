@@ -21,6 +21,8 @@ class SemkittiRangeViewDataset(data.Dataset):
         root_path: bool = None,
         logger = None,
     ):
+        """"""
+        
         self.data_cfgs = data_cfgs
         self.training = training
         self.root = root_path if root_path is not None else self.data_cfgs.DATA_PATH
@@ -116,9 +118,13 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def __len__(self):
+        """"""
+        
         return len(self.lidar_list)
 
     def __getitem__(self, index):
+        """"""
+        
         self.A.open_scan(self.lidar_list[index])
         self.A.open_label(self.label_list[index])
 
@@ -195,6 +201,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def RangeUnion(self, scan, label, mask, scan_, label_, mask_):
+        """"""
+        
         pix_empty = mask == 0
 
         scan_new = scan.copy()
@@ -208,6 +216,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def RangePaste(self, scan, label, mask, scan_, label_, mask_):
+        """"""
+        
         scan_new = scan.copy()
         label_new = label.copy()
         mask_new = mask.copy()
@@ -282,6 +292,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def prepare_input_label_semantic_with_mask(self, sample):
+        """"""
+        
         scale_x = np.expand_dims(np.ones([self.H, self.W]) * 50.0, axis=-1).astype(np.float32)
         scale_y = np.expand_dims(np.ones([self.H, self.W]) * 50.0, axis=-1).astype(np.float32)
         scale_z = np.expand_dims(np.ones([self.H, self.W]) * 3.0,  axis=-1).astype(np.float32)
@@ -302,6 +314,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def sample_transform(self, dataset_dict, split_point):
+        """"""
+        
         dataset_dict['xyz'] = np.concatenate(
             [dataset_dict['xyz'][:, split_point:, :], dataset_dict['xyz'][:, :split_point, :]], axis=1
         )
@@ -321,6 +335,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def sem_label_transform(self,raw_label_map):
+        """"""
+        
         for i in self.label_transfer_dict.keys():
             raw_label_map[raw_label_map==i]=self.label_transfer_dict[i]
         
@@ -328,6 +344,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def generate_label(self,semantic_label):
+        """"""
+        
         original_label=np.copy(semantic_label)
         label_new=self.sem_label_transform(original_label)
         
@@ -335,6 +353,8 @@ class SemkittiRangeViewDataset(data.Dataset):
 
 
     def fill_spherical(self,range_image):
+        """"""
+        
         # fill in spherical image for calculating normal vector
         height,width=np.shape(range_image)[:2]
         value_mask=np.asarray(1.0-np.squeeze(range_image)>0.1).astype(np.uint8)
@@ -351,6 +371,8 @@ class SemkittiRangeViewDataset(data.Dataset):
                    
 
 def absoluteFilePaths(directory):
+    """"""
+    
     for dirpath, _, filenames in os.walk(directory):
         filenames.sort()
         for f in filenames:
@@ -360,6 +382,8 @@ def absoluteFilePaths(directory):
 class MixTeacherSemkitti:
     
     def __init__(self, strategy,):
+        """"""
+        
         super(MixTeacherSemkitti, self).__init__()
         self.strategy = strategy
         
@@ -479,6 +503,8 @@ class MixTeacherSemkitti:
         
         
     def col1row2(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         mid_h = int(img.shape[-2] / 2)  # 64/2 = 32
 
         imgA_1, imgA_2 = img[:, :mid_h, :], img[:, mid_h:, :]  # upper-half1, lower-half1
@@ -501,6 +527,8 @@ class MixTeacherSemkitti:
 
 
     def col1row3(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         h1 = int(img.shape[-2] / 3)  # 64/3 = 21
         h2 = 2 * h1                   # 21*2 = 42
 
@@ -524,6 +552,8 @@ class MixTeacherSemkitti:
 
 
     def col1row4(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         h1 = int(img.shape[-2] / 4)     # 64/4 = 16
         mid_h = int(img.shape[-2] / 2)  # 64/2 = 32
         h3 = 3 * h1                     # 16*3 = 48
@@ -548,6 +578,8 @@ class MixTeacherSemkitti:
     
     
     def col1row5(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         h1 = int(img.shape[-2] / 5)      # 64/5 = 12
         h2 = 2 * h1                      # 2*12 = 24
         h3 = 3 * h1                      # 3*12 = 36
@@ -573,6 +605,8 @@ class MixTeacherSemkitti:
 
 
     def col1row6(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         h1 = int(img.shape[-2] / 6)     # 64/6 = 10
         h2 = 2 * h1                      # 2*10 = 20
         h3 = 3 * h1                      # 3*10 = 30
@@ -599,6 +633,8 @@ class MixTeacherSemkitti:
 
 
     def col2row1(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         mid_w = int(img.shape[-1] / 2)  # 2048/2 = 1024
         
         imgA_1, imgA_2 = img[:, :, :mid_w], img[:, :, mid_w:]  # left-half1, right-half1
@@ -621,6 +657,8 @@ class MixTeacherSemkitti:
 
 
     def col2row2(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         mid_h = int(img.shape[-2] / 2)  # 64/2 = 32
         mid_w = int(img.shape[-1] / 2)  # 2048/2 = 1024
         
@@ -660,6 +698,8 @@ class MixTeacherSemkitti:
 
 
     def col2row3(self, img, lbl, msk, img_aux, lbl_aux, msk_aux):
+        """"""
+        
         h1 = int(img.shape[-2] / 3)      # 64/3 = 21
         h2 = 2 * h1                      # 2*21 = 42
         mid_w = int(img.shape[-1] / 2)   # 2048/2 = 1024

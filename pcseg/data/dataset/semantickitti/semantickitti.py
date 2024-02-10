@@ -11,6 +11,8 @@ instance_classes = [1, 2, 3, 4, 5, 6, 7, 8]
 Omega = [np.random.random() * np.pi * 2 / 3, (np.random.random() + 1) * np.pi * 2 / 3]
 
 def absoluteFilePaths(directory):
+    """"""
+    
     for dirpath, _, filenames in os.walk(directory):
         for f in filenames:
             yield os.path.abspath(os.path.join(dirpath, f))
@@ -26,6 +28,8 @@ class SemantickittiDataset(data.Dataset):
         logger = None,
         if_scribble: bool = False,
     ):
+        """"""
+        
         super().__init__()
         self.data_cfgs = data_cfgs
         self.root_path = root_path
@@ -78,12 +82,18 @@ class SemantickittiDataset(data.Dataset):
             self.sample_idx = self._sample_idx
 
     def __len__(self):
+        """"""
+        
         return len(self.sample_idx)
 
     def resample(self):
+        """"""
+        
         self.sample_idx = np.random.choice(self._sample_idx, self.samples_per_epoch)
     
     def get_kitti_points_ringID(self, points):
+        """"""
+        
         scan_x = points[:, 0]
         scan_y = points[:, 1]
         yaw = -np.arctan2(scan_y, -scan_x)
@@ -96,6 +106,8 @@ class SemantickittiDataset(data.Dataset):
         return ringID
 
     def __getitem__(self, index):
+        """"""
+        
         raw_data = np.fromfile(self.annos[index], dtype=np.float32).reshape((-1, 4))
 
         if self.split == 'test':
@@ -178,5 +190,7 @@ class SemantickittiDataset(data.Dataset):
 
     @staticmethod
     def collate_batch(batch_list):
+        """"""
+        
         raise NotImplementedError
 

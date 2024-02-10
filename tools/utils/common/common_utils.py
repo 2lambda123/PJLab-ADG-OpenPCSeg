@@ -18,18 +18,24 @@ import secrets
 
 
 def check_numpy_to_torch(x):
+    """"""
+    
     if isinstance(x, np.ndarray):
         return torch.from_numpy(x).float(), True
     return x, False
 
 
 def limit_period(val, offset=0.5, period=np.pi):
+    """"""
+    
     val, is_numpy = check_numpy_to_torch(val)
     ans = val - torch.floor(val / period + offset) * period
     return ans.numpy() if is_numpy else ans
 
 
 def drop_info_with_name(info, name):
+    """"""
+    
     ret_info = {}
     keep_indices = [i for i, x in enumerate(info['name']) if x != name]
     for key in info.keys():
@@ -63,6 +69,8 @@ def rotate_points_along_z(points, angle):
 
 
 def mask_points_by_range(points, limit_range):
+    """"""
+    
     mask = (points[:, 0] >= limit_range[0]) & (points[:, 0] <= limit_range[3]) \
            & (points[:, 1] >= limit_range[1]) & (points[:, 1] <= limit_range[4])
     
@@ -70,6 +78,8 @@ def mask_points_by_range(points, limit_range):
 
 
 def get_voxel_centers(voxel_coords, downsample_times, voxel_size, point_cloud_range):
+    """"""
+    
     assert voxel_coords.shape[1] == 3
     voxel_centers = voxel_coords[:, [2, 1, 0]].float()
     voxel_size = torch.tensor(voxel_size, device=voxel_centers.device).float() * downsample_times
@@ -80,6 +90,8 @@ def get_voxel_centers(voxel_coords, downsample_times, voxel_size, point_cloud_ra
 
 
 def create_logger(log_file=None, rank=0, log_level=logging.INFO):
+    """"""
+    
     logger = logging.getLogger(__name__)
     logger.setLevel(log_level if rank == 0 else 'ERROR')
     formatter = logging.Formatter('%(asctime)s  %(levelname)5s  %(message)s')
@@ -97,6 +109,8 @@ def create_logger(log_file=None, rank=0, log_level=logging.INFO):
 
 
 def set_random_seed(seed):
+    """"""
+    
     secrets.SystemRandom().seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -123,6 +137,8 @@ def get_pad_params(desired_size, cur_size):
 
 
 def keep_arrays_by_name(gt_names, used_classes):
+    """"""
+    
     inds = [i for i, x in enumerate(gt_names) if x in used_classes]
     inds = np.array(inds, dtype=np.int64)
     return inds
@@ -158,6 +174,8 @@ def init_dist_slurm(tcp_port, local_rank, backend='nccl'):
 
 
 def init_dist_pytorch(tcp_port, local_rank, backend='nccl'):
+    """"""
+    
     if mp.get_start_method(allow_none=True) is None:
         mp.set_start_method('spawn')
     # os.environ['MASTER_PORT'] = str(tcp_port)
@@ -176,6 +194,8 @@ def init_dist_pytorch(tcp_port, local_rank, backend='nccl'):
 
 
 def get_dist_info(return_gpu_per_machine=False):
+    """"""
+    
     if torch.__version__ < '1.0':
         initialized = dist._initialized
     else:
@@ -198,6 +218,8 @@ def get_dist_info(return_gpu_per_machine=False):
 
 
 def merge_results_dist(result_part, size, tmpdir):
+    """"""
+    
     rank, world_size = get_dist_info()
     os.makedirs(tmpdir, exist_ok=True)
 
@@ -222,6 +244,8 @@ def merge_results_dist(result_part, size, tmpdir):
 
 
 def scatter_point_inds(indices, point_inds, shape):
+    """"""
+    
     ret = -1 * torch.ones(*shape, dtype=point_inds.dtype, device=point_inds.device)
     ndim = indices.shape[-1]
     flattened_indices = indices.view(-1, ndim)
@@ -231,6 +255,8 @@ def scatter_point_inds(indices, point_inds, shape):
 
 
 def generate_voxel2pinds(sparse_tensor):
+    """"""
+    
     device = sparse_tensor.indices.device
     batch_size = sparse_tensor.batch_size
     spatial_shape = sparse_tensor.spatial_shape
@@ -242,6 +268,8 @@ def generate_voxel2pinds(sparse_tensor):
 
 
 def sa_create(name, var):
+    """"""
+    
     x = SharedArray.create(name, var.shape, dtype=var.dtype)
     x[...] = var[...]
     x.flags.writeable = False
@@ -251,15 +279,21 @@ def sa_create(name, var):
 class AverageMeter(object):
     """Computes and stores the average and current value"""
     def __init__(self):
+        """"""
+        
         self.reset()
 
     def reset(self):
+        """"""
+        
         self.val = 0
         self.avg = 0
         self.sum = 0
         self.count = 0
 
     def update(self, val, n=1):
+        """"""
+        
         self.val = val
         self.sum += val * n
         self.count += n
