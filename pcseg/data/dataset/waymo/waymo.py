@@ -15,6 +15,8 @@ class WaymoDataset(data.Dataset):
         nusc=None,
         if_scribble: bool = False,
     ):
+        """"""
+        
         super().__init__()
         self.data_cfgs = data_cfgs
         self.root_path = root_path
@@ -67,12 +69,18 @@ class WaymoDataset(data.Dataset):
             self.sample_idx = self._sample_idx
 
     def __len__(self):
+        """"""
+        
         return len(self.sample_idx)
 
     def resample(self):
+        """"""
+        
         self.sample_idx = np.random.choice(self._sample_idx, self.samples_per_epoch)
 
     def __getitem__(self, index):
+        """"""
+        
         index = self.sample_idx[index]
         ann_info = self.annos[index]
         raw_xyz = np.load(ann_info)[:,3:6].reshape((-1,3)).astype(np.float32)
@@ -105,5 +113,7 @@ class WaymoDataset(data.Dataset):
 
     @staticmethod
     def collate_batch(batch_list):
+        """"""
+        
         raise NotImplementedError
 
